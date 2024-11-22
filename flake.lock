@@ -36,7 +36,11 @@
     },
     "root": {
       "inputs": {
-        "flakelight": "flakelight"
+        "flakelight": "flakelight",
+        "nixpkgs": [
+          "flakelight",
+          "nixpkgs"
+        ]
       }
     }
   },

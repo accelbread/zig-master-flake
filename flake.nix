@@ -1,10 +1,13 @@
 {
-  inputs.flakelight.url = "github:nix-community/flakelight";
+  inputs = {
+    flakelight.url = "github:nix-community/flakelight";
+    nixpkgs.follows = "flakelight/nixpkgs";
+  };
   outputs = { flakelight, ... }@inputs: flakelight ./. {
     inherit inputs;
     packages = {
-      zig_master = { lib, zig, fetchFromGitHub, llvmPackages_19 }:
-        (zig.overrideAttrs (prevAttrs: rec {
+      zig_master = { inputs', lib, fetchFromGitHub, llvmPackages_19 }:
+        (inputs'.nixpkgs.legacyPackages.zig.overrideAttrs (prevAttrs: rec {
           version = "0.14.0-dev.2262+dceab4502";
           src = fetchFromGitHub {
             owner = "ziglang";
@@ -37,6 +40,13 @@
           postPatch = ''
             ln -s ${callPackage ./zls-deps.nix { }} $ZIG_GLOBAL_CACHE_DIR/p
           '';
+        });
+    };
+    overlays = { lib, outputs, ... }: {
+      override-zig = lib.composeExtensions outputs.overlays.default
+        (final: prev: {
+          zig = final.zig_master;
+          zls = final.zls_master;
         });
     };
   };
