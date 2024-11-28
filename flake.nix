@@ -6,7 +6,7 @@
   outputs = { flakelight, ... }@inputs: flakelight ./. {
     inherit inputs;
     packages = {
-      zig_master = { inputs', lib, fetchFromGitHub, llvmPackages_19 }:
+      zig_master = { inputs', system, lib, fetchFromGitHub, llvmPackages_19 }:
         (inputs'.nixpkgs.legacyPackages.zig.overrideAttrs (prevAttrs: rec {
           version = "0.14.0-dev.2262+dceab4502";
           src = fetchFromGitHub {
@@ -15,8 +15,12 @@
             rev = "dceab4502abf7af6f1ce1a7fa5c9143a46ac8ffa";
             hash = "sha256-y8R9YUOsjxKfIrL3H5IfCMvknInglxdOnHInTbfsBvE=";
           };
-          cmakeFlags = prevAttrs.cmakeFlags ++ [
+          cmakeFlags = [
             (lib.cmakeFeature "ZIG_VERSION" version)
+            (lib.cmakeBool "CMAKE_SKIP_BUILD_RPATH" true)
+            (lib.cmakeBool "ZIG_STATIC_LLVM" true)
+            (lib.cmakeFeature "ZIG_TARGET_MCPU"
+              (if system == "x86_64-linux" then "x86_64_v3" else "baseline"))
           ];
           postBuild = ''
             stage3/bin/zig build docs --zig-lib-dir "$PWD/stage3/lib/zig"
