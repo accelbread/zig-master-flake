@@ -8,12 +8,12 @@
     packages = {
       zig_master = { inputs', system, lib, fetchFromGitHub, llvmPackages_19 }:
         (inputs'.nixpkgs.legacyPackages.zig.overrideAttrs (prevAttrs: rec {
-          version = "0.14.0-dev.2643+fb43e91b2";
+          version = "0.14.0-dev.3237+ddff1fa4c";
           src = fetchFromGitHub {
             owner = "ziglang";
             repo = "zig";
-            rev = "fb43e91b226a9cde51967455c57989c0371d4b0a";
-            hash = "sha256-YQFlRQ5DRqjwoN6pq56ogmtzgmqh+XX0Rk+zAZSwv9E=";
+            rev = "ddff1fa4c6cb80363a2c2a34fd5eace95be585d4";
+            hash = "sha256-pJkQ0sEIuH8K0VBi9LZB58rfbhv1Cbxhm/8/Hx4HA/k=";
           };
           cmakeFlags = [
             (lib.cmakeFeature "ZIG_VERSION" version)
@@ -33,12 +33,12 @@
       zls_master = { stdenv, zig_master, fetchFromGitHub, callPackage }:
         stdenv.mkDerivation (finalAttrs: {
           pname = "zls";
-          version = "c942ce7";
+          version = "0.14.0-dev+188a4c04b";
           src = fetchFromGitHub {
             owner = "zigtools";
             repo = "zls";
-            rev = "c942ce73b2fa1e6b8f5f66a3bfe0b4179cb46d15";
-            hash = "sha256-UcPBAVHlesvZWS1FNXgr872hhc2VI5ITcrfepjTwKqw=";
+            rev = "188a4c04bef66a29534eb2059f9d6c3c5ed10bd8";
+            hash = "sha256-b5HvgkHV7lElyZr9mg2ulj5mtczrkM8qklcX9ILN7wg=";
           };
           nativeBuildInputs = [ zig_master.hook ];
           postPatch = ''
