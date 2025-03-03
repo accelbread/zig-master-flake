@@ -3,7 +3,7 @@
     flakelight.url = "github:nix-community/flakelight";
     nixpkgs.follows = "flakelight/nixpkgs";
   };
-  outputs = { flakelight, ... }@inputs: flakelight ./. {
+  outputs = { flakelight, ... }@inputs: flakelight ./. ({ outputs, ... }: {
     inherit inputs;
     packages = {
       zig_master = { inputs', system, lib, fetchFromGitHub, llvmPackages_19 }:
@@ -53,5 +53,9 @@
           zls = final.zls_master;
         });
     };
-  };
+    flakelightModule = {
+      withOverlays = [ outputs.overlays.default ];
+      zigToolchain = pkgs: { zig = pkgs.zig_master; zls = pkgs.zls_master; };
+    };
+  });
 }
